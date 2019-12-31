@@ -1,0 +1,25 @@
+import csv
+from classifier.trainee import Trainee
+from classifier.data import TextData
+from classifier import preprocess
+
+
+def read_raw(filename):
+    raw_data = []
+    with open(filename, 'r', encoding="utf8") as file:
+        rows = list(csv.reader(file, delimiter=","))
+        for row in rows:
+            raw_data.append((row[0], row[1]))
+    return raw_data
+
+
+if __name__ == "__main__":
+    csv_filename = "../data/ptt-classification-corpus.csv"
+    raw_data = read_raw(csv_filename)
+    data = []
+    for title, label in raw_data:
+        token = preprocess.convert_char_token(title)
+        data.append((token, label))
+    train_data = TextData()
+    train_data.process(data)
+
