@@ -20,6 +20,9 @@ if __name__ == "__main__":
     for title, label in raw_data:
         token = preprocess.convert_char_token(title)
         data.append((token, label))
-    train_data = TextData()
+    train_data = TextData(doc_size=50)
     train_data.process(data)
+
+    trainee = Trainee()
+    trainee.train(train_data=train_data, epoch=3, bsz=4, lr=0.001)
 

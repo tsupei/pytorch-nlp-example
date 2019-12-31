@@ -13,14 +13,17 @@ class Trainee(object):
         self.model = OneLayerPerceptron(num_embeddings=4840, embedding_dim=256, num_classes=4)
 
     def train(self, train_data, epoch, bsz, lr):
-        data_loader = DataLoader(train_data.get_dataset(), num_workers=4, batch_size=bsz, drop_last=True)
+        data_loader = DataLoader(train_data.get_dataset(), num_workers=4, batch_size=bsz, drop_last=True, shuffle=True)
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
         for i in range(epoch):
             with tqdm(total=len(data_loader)) as progress_bar:
                 for train_x, train_y in data_loader:
+                    optimizer.zero_grad()
                     logit = self.model(train_x)
                     loss = F.cross_entropy(logit, train_y)
+                    tqdm.write("Loss: {}".format(loss.item()))
                     loss.backward()
+                    optimizer.step()
                     progress_bar.update(1)
 
     def predict(self):
